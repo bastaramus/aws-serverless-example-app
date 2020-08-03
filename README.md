@@ -1,6 +1,6 @@
-# Example AWS Lambda Application
+# AWS Lambda Application
 
-This is an application for AWS Lambda service with Python anc C++ functions. It is just an example how to configure an AWS infrastracture with the Terraform, develop and deploy an application with AWS Serverless Application Model (AWS SAM) Framework, build and test it locally with Docker awslinux container. 
+This is an application for AWS Lambda service with Python anc C++ functions. It is just an example how to configure AWS infrastracture with the Terraform, develop and deploy an application with the AWS Serverless Application Model (AWS SAM) Framework, build and test it locally with Docker AWS Linux container. 
 
 # Architecture
 
@@ -14,17 +14,15 @@ This is an application for AWS Lambda service with Python anc C++ functions. It 
 
 **xproject-app/cpp-function:** source code of the Python function to work with s3 files (upload and download to s3 bucket via signed url).
 
-**xproject-app/package:** dependencies for Python functions. We deploy it as an additional Lambda Layer.
-
 **xproject-app/events:** folder with test events for local invocation.
 
-**xproject-app/client-app.py:** just an example of client application that works with our Lambda backend. It is simple CLI app.
+**xproject-app/client-app.py:** just an example of the client application that works with our Lambda backend. It is a simple CLI app.
 
 Also, there are shell scripts in the `xproject-app` directory to build, deploy, invoke our Lambda functions and etc.
 
 # Infrastructure
 
-A big part of the infrastructure is configured by Terraform. There are:
+Some part of the infrastructure is configured by Terraform. There are:
 - VPC (separated VPC, private and public subnets, security groups)
 - S3 buckets (one bucket to store Lambda artifacts and another one for media content)
 - IAM policies and roles
@@ -39,8 +37,7 @@ Our application, API Gateway and functions are configured via SAM Framework.  Th
 - [Docker community edition](https://hub.docker.com/search/?type=edition&offering=community) to build C++ function and test the application locally.
 - Optionally the Bash shell. For Linux and macOS, this is included by default. In Windows 10, you can install the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to get a Windows-integrated version of Ubuntu and Bash.
 
-If you prefer to use an integrated development environment (IDE) to build and test your application, you can use the AWS Toolkit.  
-The AWS Toolkit is an open source plug-in for popular IDEs that uses the SAM CLI to build and deploy serverless applications on AWS. The AWS Toolkit also adds a simplified step-through debugging experience for Lambda function code. See the following links to get started.
+If you prefer to use an integrated development environment (IDE) to build and test your application, you can use the AWS Toolkit. The AWS Toolkit is an open source plug-in for popular IDEs that uses the SAM CLI to build and deploy serverless applications on AWS. The AWS Toolkit also adds a simplified step-through debugging experience for Lambda function code. See the following links to get started.
 
 - [PyCharm](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
 - [IntelliJ](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
@@ -62,13 +59,13 @@ There is a script `aws-profile.sh` that sets up your AWS profile in your environ
 
 :warning: **If you build and deploy your application for the first time:**  Change *.sh scripts for your environment. At least, you should change:
 
-`ARTIFACT_BUCKET` variable:  Your lambda functions will be stored in this S3 bucket.
+`ARTIFACT_BUCKET` variable:  Your lambda functions will be stored in this S3 bucket. It is created by the Terraform.
 
 `stack-name` parameter: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching your project name.
 
 `region` parameter: The AWS region you want to deploy your app to.
 
-## Python Functions
+### Python Functions
 
 At first you should build a Lambda layer that contains the function's runtime dependencies, run `1-build-layer-python.sh`. Packaging dependencies in a layer reduces the size of the deployment package that you upload when you modify your code.
 
@@ -80,7 +77,7 @@ To deploy the application run `2-deploy.sh`.
 
 This script uses SAM CLI and AWS CloudFormation to deploy the Lambda functions, the API Gateway and other resources from the `template.yaml` file. If the AWS CloudFormation stack that contains the resources already exists, the script updates it with any changes to the template or function code.
 
-## CPP Functions
+### CPP Functions
 
 At first you should build a docker image that will compile your C++ application. There is a Dockerfile in the `xproject-app/cpp-function` directory. This docker image is based on the AWS Linux image. It already contains all dependencies to compile our simple application.
 
@@ -98,7 +95,7 @@ After deployment is success you can invoke this C++ function with a script `3-in
 
     xproject-app$ ./3-invoke-cpp.sh
 
-## Test it locally
+### Test it locally
 
 Test a single function by invoking it directly with a test event. An event is a JSON document that represents the input that the function receives from the event source. Test events are included in the `events` folder in this project.
 
@@ -128,7 +125,7 @@ The SAM CLI can also emulate your application's API. Use the `sam local start-ap
     xproject-app$ curl http://127.0.0.1:3000/files/list
     [{"Name": "pikachu.png", "URI": "https://xproject-dev-media-content-15308.s3.amazonaws.com/pikachu.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA5JGR5YCN64D57RM2%2F20200803%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20200803T122752Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=a8b0c48d22d9e916ee6b37f50c966dd018a6c58ff3185c40f1322a7391aff753"}]
 
-## Fetch, tail, and filter Lambda function logs
+### Fetch, tail, and filter Lambda function logs
 
 To simplify troubleshooting, SAM CLI has a command called `sam logs`. `sam logs` lets you fetch logs generated by your deployed Lambda function from the command line. In addition to printing the logs on the terminal, this command has several nifty features to help you quickly find the bug.
 
@@ -137,16 +134,16 @@ To simplify troubleshooting, SAM CLI has a command called `sam logs`. `sam logs`
 You can find more information and examples about filtering Lambda function logs in the [SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-logging.html).
 
 
-## Resources
-
-[AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html)
-
-[AWS Serverless Application Repository main page](https://aws.amazon.com/serverless/serverlessrepo/)
-
-[AWS Lambda C++ Runtime](https://github.com/awslabs/aws-lambda-cpp)
+# Resources
 
 [What is AWS Lambda?](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
 
-[Safe Lambda deployments](https://github.com/awslabs/serverless-application-model/blob/master/docs/safe_lambda_deployments.rst)
+[AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html)
+
+[AWS Lambda C++ Runtime](https://github.com/awslabs/aws-lambda-cpp)
 
 [AWS Compute Blog - Introducing the C++ Lambda Runtime](https://aws.amazon.com/ru/blogs/compute/introducing-the-c-lambda-runtime/)
+
+[AWS Serverless Application Repository main page](https://aws.amazon.com/serverless/serverlessrepo/)
+
+[Safe Lambda deployments](https://github.com/awslabs/serverless-application-model/blob/master/docs/safe_lambda_deployments.rst)
