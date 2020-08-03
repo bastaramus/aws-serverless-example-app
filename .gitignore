@@ -1,0 +1,6 @@
+**/.terraform
+infrastructure/init/terraform.tfstate.backup
+**/out.json
+**/out.yaml
+xproject-app/package/*
+xproject-app/cpp-function/hello-cpp-world/build/*

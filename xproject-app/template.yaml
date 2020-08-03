@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  xproject-app
+
+  Sample SAM Template for xproject-app
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 10
+  Api:
+    OpenApiVersion: 3.0.1
+
+
+Resources:
+  XprojectAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: dev
+
+  FilesFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: files-function/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      Layers:
+        - !Ref PythonLibs
+      Tracing: Active
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        #Created by Terraform. iam_policy_AWSLambdaNetworkInterfaces_arn
+        - arn:aws:iam::913120805019:policy/AWSLambdaNetworkInterfaces
+      VpcConfig:
+        SubnetIds:
+          #Created by Terraform. intra_subnets_id
+          - subnet-0e5f8f7af987fb3e8
+          - subnet-0f0c7f66c7d8b2d3d
+          - subnet-0d26b81821ccf5916
+        SecurityGroupIds:
+          #Created by Terraform. xproject_lambda_default_sg_id
+          - sg-0d6496decb4ba45f7
+      AutoPublishAlias: live
+      Events:
+        ListFiles:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /files/list
+            Method: get
+            RestApiId: !Ref XprojectAPI
+        GetUploadURL:
+          Type: Api 
+          Properties:
+            Path: /files/getuploadurl
+            Method: get
+            RestApiId: !Ref XprojectAPI
+  HelloWorldCppFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: cpp-function/hello-cpp-world/build/hello.zip # relative location or S3 key
+      Handler: hello # function to handle call? Why is this hello and not main?
+      Runtime: provided
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        #Created by Terraform. iam_policy_AWSLambdaNetworkInterfaces_arn
+        - arn:aws:iam::913120805019:policy/AWSLambdaNetworkInterfaces
+      VpcConfig:
+        SubnetIds:
+          #Created by Terraform. intra_subnets_id
+          - subnet-0e5f8f7af987fb3e8
+          - subnet-0f0c7f66c7d8b2d3d
+          - subnet-0d26b81821ccf5916
+        SecurityGroupIds:
+          #Created by Terraform. xproject_lambda_default_sg_id
+          - sg-0d6496decb4ba45f7
+      Events:
+        HelloWorld: # the name of the event
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /cpphello
+            Method: get
+            RestApiId: !Ref XprojectAPI
+
+  
+  PythonLibs:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: xproject-python-libs
+      Description: Python dependencies for the xproject-app.
+      ContentUri: package/.
+      CompatibleRuntimes:
+        - python3.8
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  ListFilesAPI:
+    Description: "API Gateway endpoint URL for dev stage to get list of files"
+    Value: !Sub "https://${XprojectAPI}.execute-api.${AWS::Region}.amazonaws.com/dev/files/list"
+  HelloWorldCppAPI:
+    Description: "API Gateway endpoint URL for dev stage to test cpp function"
+    Value: !Sub "https://${XprojectAPI}.execute-api.${AWS::Region}.amazonaws.com/dev/cpphello"
+  GetUploadURLAPI:
+    Description: "API Gateway endpoint URL for dev stage to get url for upload"
+    Value: !Sub "https://${XprojectAPI}.execute-api.${AWS::Region}.amazonaws.com/dev/files/getuploadurl"
+  FilesFunction:
+    Description: "Files Lambda Function ARN"
+    Value: !GetAtt FilesFunction.Arn
+  FilesFunctionIamRole:
+    Description: "Implicit IAM Role created for Files function"
+    Value: !GetAtt FilesFunctionRole.Arn
