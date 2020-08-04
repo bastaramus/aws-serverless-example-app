@@ -6,7 +6,7 @@ This is my serverless application for the AWS Lambda service with Python anc C++
 
 ### AWS Infrastructure Scheme:
 
-![AWS Infrastructure Scheme](/images/flow_aws_lambda_example_app.png)
+![AWS Infrastructure Scheme](/images/aws_lambda_example_app.png)
 
 There are two Lambda Functions:
 
@@ -18,7 +18,7 @@ There are two Lambda Functions:
 
 You can look at the next workflow diagram that shows how user gets access to a file from the S3 bucket via signed URL:
 
-![Workflow diagram](/images/aws_lambda_example_app.png)
+![Workflow diagram](/images/flow_aws_lambda_example_app.png)
 
 ### 
 
