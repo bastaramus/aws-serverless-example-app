@@ -1,12 +1,12 @@
 # AWS Lambda Application
 
-This is a serverless application for the AWS Lambda service with Python anc C++ functions. It is just an example how to configure AWS infrastracture with the Terraform, develop and deploy an application with the AWS Serverless Application Model (AWS SAM) Framework, build and test it locally with Docker AWS Linux container. 
+This is my serverless application for the AWS Lambda service with Python anc C++ functions. It is just an example how to configure AWS infrastracture with the Terraform, develop and deploy an application with the AWS Serverless Application Model (AWS SAM) Framework, build and test it locally with Docker AWS Linux container. 
 
 # Architecture
 
 ### AWS Infrastructure Scheme:
 
-![AWS Infrastructure Scheme](/images/aws_lambda_example_app.png)
+![AWS Infrastructure Scheme](/images/flow_aws_lambda_example_app.png)
 
 There are two Lambda Functions:
 
