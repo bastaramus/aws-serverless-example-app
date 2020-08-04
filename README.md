@@ -1,8 +1,27 @@
 # AWS Lambda Application
 
-This is an application for AWS Lambda service with Python anc C++ functions. It is just an example how to configure AWS infrastracture with the Terraform, develop and deploy an application with the AWS Serverless Application Model (AWS SAM) Framework, build and test it locally with Docker AWS Linux container. 
+This is a serverless application for the AWS Lambda service with Python anc C++ functions. It is just an example how to configure AWS infrastracture with the Terraform, develop and deploy an application with the AWS Serverless Application Model (AWS SAM) Framework, build and test it locally with Docker AWS Linux container. 
 
 # Architecture
+
+### AWS Infrastructure Scheme:
+
+![AWS Infrastructure Scheme](/images/aws_lambda_example_app.png)
+
+There are two Lambda Functions:
+
+**cpp-function** is an example of C++ function, it returns "Hellow World" at the endpoint **/cpphello [GET]**
+
+**files-function** is a Python function that works with the AWS S3 service. It has next REST endpoints:
+- **/files/getuploadurl [GET]** returns private presigned upload URL for the S3.
+- **/files/list [GET]** returns a list of files with private presigned URLs that user can use to access files from the S3.
+
+You can look at the next workflow diagram that shows how user gets access to a file from the S3 bucket via signed URL:
+
+![Workflow diagram](/images/aws_lambda_example_app.png)
+
+### 
+
 
 # Source Layout
 
@@ -47,7 +66,7 @@ If you prefer to use an integrated development environment (IDE) to build and te
 # AWS Profile
 
 For this step you should create an AWS account and get aws_access_key_id and aws_secret_access_key.
-Then follow [this instruction] (https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) from AWS to configure your AWS profile.
+Then follow [this instruction](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) from AWS to configure your AWS profile.
 
 There is a script `aws-profile.sh` that sets up your AWS profile in your environment. If you have multiple profiles in your AWS config, you can use it with 
 
